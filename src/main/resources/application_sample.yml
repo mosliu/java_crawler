@@ -1,0 +1,96 @@
+server:
+  port: 8849
+logging:
+  config: classpath:log4j2.xml
+  #  config: /home/userA/SpringBoot/micro-service01/config/log4j2.xml
+  level:
+    root: INFO
+    javax.activation: info
+    org.apache.catalina: INFO
+    org.apache.commons.beanutils.converters: INFO
+    org.apache.coyote.http11.Http11Processor: INFO
+    org.apache.http: INFO
+    org.apache.tomcat: INFO
+    org.springframework: INFO
+    us.codecraft.webmagic.scheduler: DEBUG
+db:
+  feedsdb: #开放平台取数据用的库
+    enable: true
+    url: jdbc:mysql://dasd:3306/dasd?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8
+    username: aaaaa
+    password: aaaaa
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  information: #数据源4
+    enable: false
+    url: jdbc:mysql://gfdss:3306/fsad?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8&&useInformationSchema=true
+    username: aaaaa
+    password: aaaaa
+    validation-query: SELECT 1
+    test-on-borrow: true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+spring:
+  datasource:
+    # 指定为HikariDataSource
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      #连接池名
+      pool-name: HikariCP
+      #最小空闲连接数
+      minimum-idle: 5
+      # 空闲连接存活最大时间，默认10分钟
+      idle-timeout: 600000
+      # 连接池最大连接数，默认是10
+      maximum-pool-size: 10
+      # 此属性控制从池返回的连接的默认自动提交行为,默认值：true
+      auto-commit: true
+      # 此属性控制池中连接的最长生命周期，值0表示无限生命周期，默认30分钟
+      max-lifetime: 1800000
+      # 数据库连接超时时间,默认30秒
+      connection-timeout: 30000
+      # 连接测试query
+      connection-test-query: SELECT 1
+  redis:
+    # 连接超时时间（毫秒）
+    timeout: 10000
+    lettuce:
+      pool:
+        # 连接池最大连接数（使用负值表示没有限制）
+        # 建议为业务期望QPS/一个连接的QPS,例如50000/1000=50
+        # 一次命令时间(borrow|return resource+Jedis执行命令+网络延迟)的平均耗时约为1ms,一个连接的QPS大约是1000
+        max-active: 20
+        # 连接池最大阻塞等待时间（使用负值表示没有限制） 默认 -1
+        # 建议不要为-1，连接池占满后无法获取连接时将在该时间内阻塞等待，超时后将抛出异常。
+        max-wait: -1
+        # 连接池中的最大空闲连接 默认 8
+        # 建议和最大连接数一致,这样做的好处是连接数从不减少,从而避免了连接池伸缩产生的性能开销。
+        max-idle: 20
+        # 连接池中的最小空闲连接 默认 0
+        # 建议为0，在无请求的状况下从不创建链接
+        min-idle: 0
+    redis113:
+      enable: true
+      host: fasdfa113
+      password: adfafdfdf
+      database: 6
+      port: 6379
+      masterName: mymaster
+      sentinels:
+        - fasdfa113:16379
+        - fasdfa111:16379
+        - fasdfa54:16379
+    #   clusters:
+    #     - fasdfa113:6379
+    #     - fasdfa111:6379
+    #     - fasdfa54:6379
+  jpa:
+    database: mysql
+    show-sql: false
+  sql:
+    init:
+      platform: mysql
+
+
+crawler:
+  backendRunnerEnable: true
+  tophubRunnerEnable: true
