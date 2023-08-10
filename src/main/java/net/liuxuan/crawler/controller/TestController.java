@@ -18,7 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDateTime;
 import java.util.Map;
 
-import static net.liuxuan.crawler.constansts.TopHubSpiderName.*;
+import static net.liuxuan.crawler.constansts.TopHubSpiderName.TOPHUB_KUAISHOU;
+import static net.liuxuan.crawler.constansts.TopHubSpiderName.TOPHUB_ZHIHU;
 import static net.liuxuan.crawler.webmagic.domain.FieldExtractMethod.*;
 
 /**
@@ -44,7 +45,7 @@ public class TestController {
         if (javaCrawlerTasks != null) {
             task = javaCrawlerTasks;
         }
-        task.setTaskType(TaskMapType.NormalTask.id()).setBaseUrl("https://www.zhihu.com/");
+        task.setTaskType(TaskMapType.TopHubTaskType.id()).setBaseUrl("https://www.zhihu.com/");
         SiteDomain siteDomain = new SiteDomain();
         siteDomain.setDomain("www.zhihu.com").setCharset("UTF-8")
                 .setUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_2) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.65 Safari/537.31")
@@ -78,7 +79,7 @@ public class TestController {
         if (javaCrawlerTasks != null) {
             task = javaCrawlerTasks;
         }
-        task.setTaskType(TaskMapType.NormalTask.id()).setBaseUrl("https://www.kuaishou.com/");
+        task.setTaskType(TaskMapType.TopHubTaskType.id()).setBaseUrl("https://www.kuaishou.com/");
         SiteDomain siteDomain = new SiteDomain();
         siteDomain.setDomain("www.kuaishou.com").setCharset("UTF-8")
                 .setUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_2) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.65 Safari/537.31")

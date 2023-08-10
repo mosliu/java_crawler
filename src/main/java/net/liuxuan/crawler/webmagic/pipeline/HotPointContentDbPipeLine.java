@@ -2,12 +2,17 @@ package net.liuxuan.crawler.webmagic.pipeline;
 
 import com.hankcs.hanlp.HanLP;
 import lombok.extern.slf4j.Slf4j;
+import net.liuxuan.crawler.CrawlerDataHolder;
 import net.liuxuan.crawler.entity.feedsdb.JavaCrawlerHotPointContent;
+import net.liuxuan.crawler.service.DataPersistentService;
 import net.liuxuan.crawler.service.JavaCrawlerHotPointContentService;
 import net.liuxuan.crawler.utils.EncryptUtil;
+import net.liuxuan.crawler.webmagic.CommonSpider;
+import net.liuxuan.crawler.webmagic.domain.SpiderDomain;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import us.codecraft.webmagic.ResultItems;
+import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.Task;
 import us.codecraft.webmagic.pipeline.Pipeline;
 
@@ -15,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -31,10 +37,30 @@ public class HotPointContentDbPipeLine implements Pipeline {
 
     @Autowired
     JavaCrawlerHotPointContentService javaCrawlerHotPointContentService;
+    @Autowired
+    DataPersistentService dataPersistentService;
 
     @Override
     public void process(ResultItems resultItems, Task task) {
 
+        ConcurrentHashMap<String, Spider> spiderMap = CrawlerDataHolder.getInstance().getSpiderMap();
+        CommonSpider spider = null;
+        if (task != null && task instanceof CommonSpider) {
+            SpiderDomain spiderInfo = ((CommonSpider) task).getSPIDER_INFO();
+            if (spiderInfo != null) {
+                spider = (CommonSpider) spiderMap.get(spiderInfo.getTaskName());
+            }
+        }
+        if (spider == null) {
+            for (Spider value : spiderMap.values()) {
+                if (value != null && task != null) {
+                    if (value == task) {
+//                        log.info("task is 11111111");
+                        spider = (CommonSpider) value;
+                    }
+                }
+            }
+        }
         Map<String, Object> extraParams = resultItems.getRequest().getExtras();
         Map<String, Object> all = resultItems.getAll();
         if (all == null) {
@@ -55,7 +81,14 @@ public class HotPointContentDbPipeLine implements Pipeline {
             Map<String, Object> finalExtraParams = extraParams;
             all1.forEach(c -> {
                         c.setStatus(1);
-                        String contentStr = get(finalExtraParams, "content");
+                        Object s = get(finalExtraParams, "content");
+                        String contentStr = null;
+                        if (s instanceof String) {
+                            contentStr = (String) s;
+                        }else if (s instanceof List){
+                            List<String> strings = (List<String>) s;
+                            contentStr = String.join(",", strings);
+                        }
                         if (isBlank(contentStr)) {
                             contentStr = get(finalExtraParams, "title");
                         }
@@ -75,7 +108,8 @@ public class HotPointContentDbPipeLine implements Pipeline {
                         c.setDesc(desc);
                     }
             );
-            javaCrawlerHotPointContentService.batchSave(all1);
+            dataPersistentService.batchSave(all1, spider);
+//            javaCrawlerHotPointContentService.batchSave(all1);
         } else {
 
             log.error("没有db中的数据？异常url?:url{}", url);
@@ -97,7 +131,8 @@ public class HotPointContentDbPipeLine implements Pipeline {
             content.setDesc(desc);
             content.setHotNum(get(extraParams, "hotNum"));
             content.setSortNum(get(extraParams, "sortNum"));
-            javaCrawlerHotPointContentService.save(content);
+            dataPersistentService.save(content, spider);
+//            javaCrawlerHotPointContentService.save(content);
         }
 //        if (content != null) {
 //            log.info("没有db中的数据？异常url?");

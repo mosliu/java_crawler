@@ -7,6 +7,7 @@ import net.liuxuan.crawler.service.JavaCrawlerTasksService;
 import net.liuxuan.crawler.spring.SpringContext;
 import net.liuxuan.crawler.spring.runner.worker.StopAbleThread;
 import net.liuxuan.crawler.webmagic.CommonSpider;
+import net.liuxuan.crawler.webmagic.domain.SpiderDomain;
 import net.liuxuan.crawler.webmagic.processor.CommonPageProcessor;
 import net.liuxuan.crawler.webmagic.scheduler.SpiderRedisScheduler;
 import org.apache.commons.collections4.CollectionUtils;
@@ -50,7 +51,8 @@ public class BackEndTasksWorker extends StopAbleThread {
         while (!isInterrupted()) {
             while (isRunFlag()) {
                 //加载所有任务
-                List<JavaCrawlerTasks> tasks = javaCrawlerTasksService.findAll();
+//                List<JavaCrawlerTasks> tasks = javaCrawlerTasksService.findAll();
+                List<JavaCrawlerTasks> tasks = javaCrawlerTasksService.findAll(new JavaCrawlerTasks().setActive(true));
                 //没有任务
                 if (CollectionUtils.isEmpty(tasks)) {
                     try {
@@ -77,7 +79,8 @@ public class BackEndTasksWorker extends StopAbleThread {
                         processor.setMetaInfo(task.getSitedomain(), task.getProcessorDomain());
 
                         SpiderRedisScheduler scheduler = new SpiderRedisScheduler(jedisPool);
-                        CommonSpider spider = new CommonSpider(processor);
+                        SpiderDomain spiderInfo = new SpiderDomain().setSendToOldTable(task.getSendToOld() != null && task.getSendToOld()).setTaskName(taskName);
+                        CommonSpider spider = new CommonSpider(processor, spiderInfo);
 
                         spider.setScheduler(scheduler);
                         spider.setExitWhenComplete(false).thread(1);

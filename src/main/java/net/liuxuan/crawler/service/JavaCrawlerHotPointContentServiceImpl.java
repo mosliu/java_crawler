@@ -1,9 +1,7 @@
 package net.liuxuan.crawler.service;
 
 import net.liuxuan.crawler.entity.feedsdb.JavaCrawlerHotPointContent;
-import net.liuxuan.crawler.entity.feedsdb.JavaCrawlerTasks;
 import net.liuxuan.crawler.repository.feedsdb.JavaCrawlerHotPointContentRepository;
-import net.liuxuan.crawler.repository.feedsdb.JavaCrawlerTasksRepository;
 import net.liuxuan.crawler.spring.jpa.service.BaseServiceImpl;
 import org.springframework.stereotype.Service;
 

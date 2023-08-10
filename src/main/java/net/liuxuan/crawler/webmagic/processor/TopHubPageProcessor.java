@@ -4,7 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import net.liuxuan.crawler.CrawlerDataHolder;
 import net.liuxuan.crawler.entity.HubTopEntity;
 import net.liuxuan.crawler.entity.feedsdb.JavaCrawlerHotPointContent;
+import net.liuxuan.crawler.entity.feedsdb.JavaCrawlerTasks;
 import net.liuxuan.crawler.service.JavaCrawlerHotPointContentService;
+import net.liuxuan.crawler.service.JavaCrawlerTasksService;
 import net.liuxuan.crawler.utils.EncryptUtil;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +27,9 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-import static net.liuxuan.crawler.constansts.TopHubSpiderName.*;
+import static net.liuxuan.crawler.constansts.TaskMapType.TopHubTaskType;
+import static net.liuxuan.crawler.constansts.TopHubSpiderName.TOPHUB_JINGJIGUANCHA;
+import static net.liuxuan.crawler.constansts.TopHubSpiderName.TOPHUB_XINLANGCAIJING;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -57,12 +61,19 @@ public class TopHubPageProcessor implements PageProcessor {
     @Autowired
     JavaCrawlerHotPointContentService javaCrawlerHotPointContentService;
 
+    @Autowired
+    JavaCrawlerTasksService javaCrawlerTasksService;
+
+    List<JavaCrawlerTasks> hubtopTasks = new ArrayList<>();
+    long lastGetTaskTime = 0L;
+
     // process是定制爬虫逻辑的核心接口，在这里编写抽取逻辑
     @Override
     public void process(Page page) {
 
         log.info("process url:{}", page.getUrl());
         LocalDateTime now = LocalDateTime.now();
+        getHubTopTasks();
         //判断是否为列表的url
         if ((page.getUrl().regex(topHubSingleListUrlRegex).match())) {
 
@@ -97,42 +108,72 @@ public class TopHubPageProcessor implements PageProcessor {
 //        //最终的url要shuffle以后再采集，有利于反爬
 //        List<String> urls = new ArrayList<>();
 
-            //获取微博
-            String weiboXpath = "//*[@id=\"node-1\"]/div/div[2]/div[1]/a";
-            //微博热搜
-            findListAndProcess(page, now, weiboXpath, TOPHUB_WEIBO);
 
-            //知乎
-            // //*[@id="node-6"]/div/div[2]/div[1]/a
-            String zhihuXpath = "//*[@id=\"node-6\"]/div/div[2]/div[1]/a";
-            findListAndProcess(page, now, zhihuXpath, TOPHUB_ZHIHU);
+//
+//            //获取微博
+//            String weiboXpath = "//*[@id=\"node-1\"]/div/div[2]/div[1]/a";
+//            //微博热搜
+//            findListAndProcess(page, now, weiboXpath, TOPHUB_WEIBO);
+//
+//            //知乎
+//            // //*[@id="node-6"]/div/div[2]/div[1]/a
+//            String zhihuXpath = "//*[@id=\"node-6\"]/div/div[2]/div[1]/a";
+//            findListAndProcess(page, now, zhihuXpath, TOPHUB_ZHIHU);
+//
+//            // wechat
+//            //  //*[@id="node-5"]/div/div[2]/div[1]/a
+//            String wechatXpath = "//*[@id=\"node-5\"]/div/div[2]/div[1]/a";
+//            findListAndProcess(page, now, wechatXpath, TOPHUB_WECHAT);
+//            // baidu
+//            // //*[@id="node-2"]/div/div[2]/div[1]/a[1]
+//            String baiduXpath = "//*[@id=\"node-2\"]/div/div[2]/div[1]/a";
+//            findListAndProcess(page, now, baiduXpath, TOPHUB_BAIDU);
+//            // bilibili
+//            // //*[@id="node-19"]/div/div[2]/div[1]/a[1]/div/span[1]
+//            String bilibiliXpath = "//*[@id=\"node-19\"]/div/div[2]/div[1]/a";
+//            findListAndProcess(page, now, bilibiliXpath, TOPHUB_BILIBILI);
+//            // 头条
+//            String toutiaoXpath = "//*[@id=\"node-3608\"]/div/div[2]/div[1]/a";
+//            findListAndProcess(page, now, toutiaoXpath, TOPHUB_TOUTIAO);
+//            // 快手
+//            String kuaishouXpath = "//*[@id=\"node-26325\"]/div/div[2]/div[1]/a";
+//            findListAndProcess(page, now, kuaishouXpath, TOPHUB_KUAISHOU);
+//            // 抖音
+//            String douyinXpath = "//*[@id=\"node-221\"]/div/div[2]/div[1]/a";
+//            findListAndProcess(page, now, douyinXpath, TOPHUB_DOUYIN);
+            // 澎湃
+//            String PengpaiXpath = "//*[@id=\"node-51\"]/div/div[2]/div[1]/a";
+//            findListAndProcess(page, now, PengpaiXpath, TOPHUB_PENGPAI);
+            //新浪国内新闻
+//            String xinLangXpath = "//*[@id=\"node-246\"]/div/div[2]/div[1]/a";
+//            findListAndProcess(page, now, xinLangXpath, TOPHUB_XINLANG);
+//            String jingjiguanchaXpath = "//*[@id=\"node-22185\"]/div/div[2]/div[1]/a";
+//            findListAndProcess(page, now, jingjiguanchaXpath, TOPHUB_JINGJIGUANCHA);
+//            String xinLangCaiJingXpath = "//*[@id=\"node-32273\"]/div/div[2]/div[1]/a";
+//            findListAndProcess(page, now, xinLangCaiJingXpath, TOPHUB_XINLANGCAIJING);
 
-            // wechat
-            //  //*[@id="node-5"]/div/div[2]/div[1]/a
-            String wechatXpath = "//*[@id=\"node-5\"]/div/div[2]/div[1]/a";
-            findListAndProcess(page, now, wechatXpath, TOPHUB_WECHAT);
-            // baidu
-            // //*[@id="node-2"]/div/div[2]/div[1]/a[1]
-            String baiduXpath = "//*[@id=\"node-2\"]/div/div[2]/div[1]/a";
-            findListAndProcess(page, now, baiduXpath, TOPHUB_BAIDU);
-            // bilibili
-            // //*[@id="node-19"]/div/div[2]/div[1]/a[1]/div/span[1]
-            String bilibiliXpath = "//*[@id=\"node-19\"]/div/div[2]/div[1]/a";
-            findListAndProcess(page, now, bilibiliXpath, TOPHUB_BILIBILI);
-            // 头条
-            String toutiaoXpath = "//*[@id=\"node-3608\"]/div/div[2]/div[1]/a";
-            findListAndProcess(page, now, toutiaoXpath, TOPHUB_TOUTIAO);
-            // 快手
-            String kuaishouXpath = "//*[@id=\"node-26325\"]/div/div[2]/div[1]/a";
-            findListAndProcess(page, now, kuaishouXpath, TOPHUB_KUAISHOU);
-            // 抖音
-            String douyinXpath = "//*[@id=\"node-221\"]/div/div[2]/div[1]/a";
-            findListAndProcess(page, now, douyinXpath, TOPHUB_DOUYIN);
-
-
+            for (JavaCrawlerTasks hubtopTask : hubtopTasks) {
+                String xpath = "//*[@id=\"node-" + hubtopTask.getExtraInfoInt1() + "\"]/div/div[2]/div[1]/a";
+                findListAndProcess(page, now, xpath, hubtopTask.getTaskName());
+            }
         }
 
 
+    }
+
+    private void getHubTopTasks() {
+        if (hubtopTasks == null) {
+            hubtopTasks = new ArrayList<>();
+        }
+        if (hubtopTasks.size() == 0) {
+            hubtopTasks = javaCrawlerTasksService.findAll(new JavaCrawlerTasks().setActive(true).setTaskType(TopHubTaskType.id()));
+            lastGetTaskTime = System.currentTimeMillis();
+            return;
+        }
+        if ((System.currentTimeMillis() - lastGetTaskTime) > 1000 * 60 - 5) {
+            hubtopTasks = javaCrawlerTasksService.findAll(new JavaCrawlerTasks().setActive(true).setTaskType(TopHubTaskType.id()));
+            lastGetTaskTime = System.currentTimeMillis();
+        }
     }
 
     /**

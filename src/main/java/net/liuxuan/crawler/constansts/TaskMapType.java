@@ -7,7 +7,8 @@ package net.liuxuan.crawler.constansts;
  * @date 2023/2/7
  **/
 public enum TaskMapType {
-    NormalTask(1, "普通任务");
+    NormalTask(0, "普通任务"),
+    TopHubTaskType(1, "TopHub任务");
 
     int typeId;
     String typeName;

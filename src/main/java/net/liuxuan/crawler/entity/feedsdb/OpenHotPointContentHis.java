@@ -13,10 +13,10 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @Accessors(chain = true)
-@Table(name = "java_crawler_hot_point_content")
-public class JavaCrawlerHotPointContent implements Serializable {
+@Table(name = "open_hot_point_content_his")
+public class OpenHotPointContentHis implements Serializable {
 
-    private static final long serialVersionUID = -1619848218989109429L;
+    private static final long serialVersionUID = 1831095950768188332L;
 
     /**
      * 主键
@@ -65,7 +65,7 @@ public class JavaCrawlerHotPointContent implements Serializable {
     /**
      * 导语或摘要
      */
-    @Column(name = "`desc`", columnDefinition = "`desc` varchar(255) DEFAULT NULL COMMENT '导语或摘要'")
+    @Column(name = "`desc`")
     private String desc;
 
 
@@ -93,7 +93,7 @@ public class JavaCrawlerHotPointContent implements Serializable {
     @Column(name = "status", columnDefinition = "tinyint")
     private Integer status;
 
-    @Column(name = "city_name")
-    private String cityName;
+//    @Column(name = "city_name")
+//    private String cityName;
 
 }

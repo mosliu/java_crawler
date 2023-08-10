@@ -9,7 +9,6 @@ import net.liuxuan.crawler.webmagic.scheduler.SpiderRedisScheduler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.JedisPool;
-import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.pipeline.ConsolePipeline;
 
@@ -17,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static net.liuxuan.crawler.constansts.TopHubSpiderName.TOPHUB_BILIBILI;
 
 /**
  * @author Liuxuan
@@ -62,7 +60,15 @@ public class TopHubWorker extends ArgsStopAbleThread<WorkerConfig> {
             //今日头条
             "https://tophub.today/n/x9ozB4KoXb",
             //B站
-            "https://tophub.today/n/74KvxwokxM"
+            "https://tophub.today/n/74KvxwokxM",
+            //澎湃
+            "https://tophub.today/n/wWmoO5Rd4E",
+            //新浪新闻
+            "https://tophub.today/n/Jb0vmwGeB1",
+//            ；经济观察网
+            "https://tophub.today/n/DOvn8x1eEB",
+            // 新浪财务
+            "https://tophub.today/n/JndkwJAd3V"
 
     ));
 

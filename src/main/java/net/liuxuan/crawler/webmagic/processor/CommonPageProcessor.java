@@ -63,7 +63,19 @@ public class CommonPageProcessor implements PageProcessor {
                 Selectable node = getNode(page.getHtml(), v);
                 if (node != null) {
                     //顺利获取到node
-                    page.putField(k, getFieldValue(node, v));
+                    Object fieldValue = getFieldValue(node, v);
+
+                    if (page.getResultItems() != null) {
+                        Object o = page.getResultItems().get(k);
+                        if (o == null) {
+                            //如果没有值，就放入
+                            page.putField(k, fieldValue);
+                        } else {
+                            //如果有值，就不放入
+                            log.info("已经有值了，不放入");
+                        }
+                    }
+
                 } else {
                     //未获取到node
                     log.info("未获取到字段:{}的node", k);

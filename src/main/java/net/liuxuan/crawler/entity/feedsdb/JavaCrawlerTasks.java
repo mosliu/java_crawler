@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 @Accessors(chain = true)
 @Table(name = "java_crawler_tasks")
+//@Table(name = "java_crawler_tasks_dev")
 @DynamicInsert
 public class JavaCrawlerTasks implements Serializable {
 
@@ -80,6 +81,15 @@ public class JavaCrawlerTasks implements Serializable {
     @Column(name = "update_time")
     private LocalDateTime updateTime;
 
+
+    /**
+     * 是否发往老表
+     */
+    @Column(name = "send_to_old")
+    private Boolean sendToOld;
+
+
+
     /**
      * 任务说明
      */
@@ -92,6 +102,14 @@ public class JavaCrawlerTasks implements Serializable {
      */
     @Column(name = "is_active")
     private Boolean active;
+
+
+
+    /**
+     * 任务类型
+     */
+    @Column(name = "extra_info_int1")
+    private Integer extraInfoInt1;
 
 
     public SiteDomain getSitedomain() {

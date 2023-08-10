@@ -1,5 +1,7 @@
 package net.liuxuan.crawler.webmagic;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.liuxuan.crawler.webmagic.domain.SpiderDomain;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -15,6 +17,8 @@ import us.codecraft.webmagic.processor.PageProcessor;
  * @date 2023/2/8
  **/
 @Slf4j
+@Getter
+@Setter
 public class CommonSpider extends Spider {
     /**
      * create a spider with pageProcessor.
@@ -27,7 +31,7 @@ public class CommonSpider extends Spider {
 
     private SpiderDomain SPIDER_INFO;
 
-    CommonSpider(PageProcessor pageProcessor, SpiderDomain spiderInfo) {
+    public CommonSpider(PageProcessor pageProcessor, SpiderDomain spiderInfo) {
         super(pageProcessor);
         this.SPIDER_INFO = spiderInfo;
     }

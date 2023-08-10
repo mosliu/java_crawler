@@ -4,8 +4,8 @@
         <Console name="LogToConsole" target="SYSTEM_OUT">
             <!--            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>-->
             <!--            <PatternLayout pattern="%highlight{%-5level}  %X{requestId}|%date{yyyy-MM-dd HH:mm:ss}|[%t]|%highlight{%l}|%m%n"/>-->
-<!--            <PatternLayout pattern="%highlight{[%p] %-d{yyyy-MM-dd HH:mm:ss} &ndash;&gt; %l%n[massage] %m%n}{FATAL=red, ERROR=red, WARN=yellow, INFO=cyan, DEBUG=cyan,TRACE=blue}"/>-->
-<!--            <PatternLayout pattern="%d %highlight{%-5level}{ERROR=Bright RED, WARN=Bright Yellow, INFO=Bright Green, DEBUG=Bright Cyan, TRACE=Bright White} %style{[%t]}{bright,magenta} %style{%c{1.}.%M(%L)}{cyan}: %msg%n"/>-->
+            <!--            <PatternLayout pattern="%highlight{[%p] %-d{yyyy-MM-dd HH:mm:ss} &ndash;&gt; %l%n[massage] %m%n}{FATAL=red, ERROR=red, WARN=yellow, INFO=cyan, DEBUG=cyan,TRACE=blue}"/>-->
+            <!--            <PatternLayout pattern="%d %highlight{%-5level}{ERROR=Bright RED, WARN=Bright Yellow, INFO=Bright Green, DEBUG=Bright Cyan, TRACE=Bright White} %style{[%t]}{bright,magenta} %style{%c{1.}.%M(%L)}{cyan}: %msg%n"/>-->
             <!--设置日志格式及颜色-->
             <PatternLayout
                     pattern="%style{%d{ISO8601}}{bright,green} %highlight{%-5level} [%style{%t}{bright,blue}] %style{%C{}}{bright,yellow}: %msg%n%style{%throwable}{red}"
@@ -36,11 +36,12 @@
     </Appenders>
     <Loggers>
         <!-- avoid duplicated logs with additivity=false -->
-        <!--        <Logger name="new.liuxuan" level="debug" additivity="false">-->
-        <!--            <AppenderRef ref="LogToRollingFile"/>-->
-        <!--        </Logger>-->
+<!--        <Logger name="new.liuxuan" level="info" additivity="false">-->
+<!--            <AppenderRef ref="LogToRollingFile"/>-->
+<!--        </Logger>-->
         <Root level="info">
             <AppenderRef ref="LogToConsole"/>
+            <AppenderRef ref="LogToRollingFile"/>
         </Root>
     </Loggers>
 </Configuration>

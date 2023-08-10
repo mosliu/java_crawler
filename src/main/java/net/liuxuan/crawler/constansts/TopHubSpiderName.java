@@ -15,4 +15,8 @@ public class TopHubSpiderName {
     public static final String TOPHUB_ZHIHU = "zhihu";
     public static final String TOPHUB_BILIBILI = "bilibili";
     public static final String TOPHUB_KUAISHOU = "kuaishou";
+    public static final String TOPHUB_PENGPAI = "pengpai";
+    public static final String TOPHUB_XINLANG = "xinlang";
+    public static final String TOPHUB_JINGJIGUANCHA = "jingjiguancha";
+    public static final String TOPHUB_XINLANGCAIJING = "xinlangcaijing";
 }
